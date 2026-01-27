@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2026 국취 자격판정 (경비교육생 모바일용)</title>
+    <style>
+        :root {
+            --brand-color: #004e92;
+            --brand-accent: #000428;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+            --bg-light: #f4f6f9;
+            --text-dark: #222;
+        }
+        
+        body { 
+            font-family: 'Pretendard', 'Malgun Gothic', sans-serif; 
+            margin: 0; 
+            display: block; 
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
+            line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
+            padding-bottom: 50px;
+        }
+        
+        /* 상단 헤더 */
+        .mobile-header {
+            background: linear-gradient(90deg, var(--brand-accent) 0%, var(--brand-color) 100%);
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .company-name { font-size: 1.3rem; font-weight: 800; display: block; }
+        .company-sub { font-size: 0.9rem; opacity: 0.9; font-weight: 400; color: #dbeafe; }
+
+        /* 가로 스크롤 메뉴 */
+        .nav-scroller {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 5px;
+            position: sticky;
+            top: 58px;
+            z-index: 1900;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            display: inline-block;
+            padding: 8px 16px;
+            color: #555;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.05rem;
+            border-radius: 20px;
+            margin-right: 5px;
+            border: 1px solid transparent;
+            transition: background-color 0.2s;
+        }
+        .nav-item.active {
+            background-color: var(--brand-color);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 메인 컨텐츠 */
+        .main-content { padding: 15px; }
+        .container { max-width: 100%; }
+        
+        /* 카드 스타일 */
+        .card { 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border: 1px solid #e1e4e8; 
+        }
+        .card-header { 
+            font-size: 1.4rem; 
+            font-weight: 800; 
+            margin-bottom: 20px; 
+            padding-bottom: 15px; 
+            border-bottom: 2px solid var(--brand-color); 
+            color: var(--brand-color); 
+        }
+        
+        /* 입력 폼 */
+        .form-group { margin-bottom: 25px; }
+        .form-label { display: block; font-weight: 800; margin-bottom: 8px; color: #000; font-size: 1.15rem; }
+        .form-control, .form-select { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid #999; 
+            border-radius: 8px; 
+            font-size: 1.1rem; 
+            box-sizing: border-box;
+            background-color: #fff;
+            -webkit-appearance: none;
+        }
+        
+        .help-text { font-size: 0.95rem; color: #444; margin-top: 8px; padding: 12px; background-color: #f1f3f5; border-radius: 6px; border-left: 4px solid #adb5bd; }
+        
+        .alert-box { 
+            background-color: #fff8e1; 
+            border: 1px solid #ffe0b2; 
+            color: #5d4037; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            gap: 10px;
+            align-items: flex-start; 
+            line-height: 1.5; 
+            font-size: 1rem;
+        }
+
+        /* 체크박스 */
+        .checkbox-container { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
+        .checkbox-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media (min-width: 400px) { .checkbox-grid { grid-template-columns: 1fr 1fr; } }
+        .checkbox-item { background: white; border: 1px solid #ccc; padding: 12px; border-radius: 6px; font-size: 1rem; display: flex; align-items: center; }
+        .checkbox-item input { width: 22px; height: 22px; margin-right: 10px; flex-shrink: 0; }
+
+        /* 버튼 */
+        .btn { 
+            background: var(--brand-color); 
+            color: white; 
+            border: none; 
+            padding: 18px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-size: 1.3rem; 
+            width: 100%; 
+            font-weight: 800; 
+            margin-bottom: 10px;
+            -webkit-appearance: none;
+        }
+        .btn-outline { background: #fff; color: var(--brand-color); border: 2px solid var(--brand-color); }
+        
+        /* 결과 박스 */
+        .result-box { display: none; padding: 25px; margin-top: 20px; border-radius: 12px; animation: slideDown 0.4s ease-out; }
+        .res-success { background: #e8f5e9; border: 2px solid #81c784; color: #2e7d32; }
+        .res-fail { background: #ffebee; border: 2px solid #e57373; color: #c62828; }
+        .res-warning { background: #fff3cd; border: 2px solid #ffecb5; color: #856404; }
+
+        /* 비교 카드 스타일 */
+        .benefit-card { 
+            border: 1px solid #ddd; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .benefit-header { 
+            padding: 15px; 
+            font-size: 1.3rem; 
+            font-weight: 900; 
+            color: white; 
+            text-align: center;
+        }
+        .type-1 .benefit-header { background: #d35400; }
+        .type-2 .benefit-header { background: #27ae60; }
+        
+        .benefit-body { padding: 20px; background: #fff; }
+        .benefit-item { 
+            margin-bottom: 15px; 
+            padding-bottom: 15px; 
+            border-bottom: 1px dashed #eee; 
+            display: flex;
+            align-items: flex-start;
+        }
+        .benefit-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .benefit-icon { font-size: 1.5rem; margin-right: 12px; min-width: 30px; text-align: center; }
+        .benefit-text strong { display: block; font-size: 1.1rem; margin-bottom: 4px; color: #333; }
+        .benefit-text span { font-size: 0.95rem; color: #666; display: block; line-height: 1.4; }
+        /* 강조 텍스트 (조건 박스) */
+        .highlight-cond { 
+            display: inline-block;
+            margin-top: 4px;
+            color: #d35400; 
+            font-weight: bold; 
+            background: #fff3e0; 
+            padding: 4px 8px; 
+            border-radius: 6px; 
+            font-size: 0.9rem;
+        }
+        
+        /* 텍스트 줄바꿈 방지 클래스 */
+        .nowrap { white-space: nowrap; }
+
+        /* 공통 서비스 박스 */
+        .common-service { 
+            background: #e3f2fd; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 2px solid #90caf9;
+            margin-top: 10px;
+        }
+        .common-title { 
+            font-weight: 800; 
+            color: #1565c0; 
+            font-size: 1.2rem; 
+            margin-bottom: 15px; 
+            text-align: center; 
+            border-bottom: 1px dashed #90caf9; 
+            padding-bottom: 10px; 
+        }
+
+        /* 모달 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
+        .modal-content { background: white; padding: 20px; border-radius: 15px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2.5rem; font-weight: bold; color: #000; cursor: pointer; padding: 10px; line-height: 0.5; }
+        
+        /* 탭 제어 */
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        #calculator { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+
+        /* 아코디언 */
+        .accordion-header { padding: 18px; background: #eee; border-bottom: 1px solid #ddd; font-weight: bold; cursor: pointer; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+        .accordion-content { padding: 18px; display: none; background: #f9f9f9; line-height: 1.6; border-bottom: 1px solid #ddd; font-size: 1.05rem; }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-header">
+        <span class="company-name">(주)좋은일자리</span>
+        <span class="company-sub">2026 국취 자격판정 (경비교육생용)</span>
+    </div>
+
+    <div class="nav-scroller">
+        <a href="#" class="nav-item active" onclick="showTab('calculator', this, event)">📊 자격 판정기</a>
+        <a href="#" class="nav-item" onclick="showTab('comparison', this, event)">⚖️ 혜택 비교</a>
+        <a href="#" class="nav-item" onclick="showTab('branch_finder', this, event)">📍 지사 찾기</a>
+        <a href="#" class="nav-item" onclick="showTab('faq_section', this, event)">❓ FAQ</a>
+        <a href="https://www.ulsan1.kr/busi/busi05.php#form" target="_blank" class="nav-item" style="color:#d35400;">📝 상담 신청</a>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+
+            <div id="calculator" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <span>🕵️ 자격요건 모의 판정</span>
+                    </div>
+
+                    <div class="alert-box" style="border-left: 5px solid #ff9800;">
+                        <span style="font-size:2rem;">👮‍♂️</span>
+                        <div>
+                            <strong>경비교육 참여자 필독!</strong><br>
+                            60세 이상이시더라도 소득/재산 기준 충족 시 <strong>월 60만원</strong> 수당을 받으며 취업지원을 받으실 수 있습니다.<br>
+                            <span style="font-size:0.9rem; color:#d35400;">* 아래 항목을 선택하고 [판정 결과 확인]을 눌러주세요.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">① 가구원 수 (주민등록 등본 기준)</label>
+                        <select id="family_cnt" class="form-select" onchange="updateIncomeOptions()">
+                            <option value="1">1인 가구 (본인 혼자)</option>
+                            <option value="2">2인 가구 (본인+배우자 등)</option>
+                            <option value="3">3인 가구</option>
+                            <option value="4">4인 가구</option>
+                            <option value="5">5인 가구</option>
+                            <option value="6">6인 가구</option>
+                        </select>
+                        <div class="help-text">
+                            * 따로 사는 부모님/형제자매는 제외합니다.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">② 가구 소득 구간 (월 평균)</label>
+                        <select id="income_range" class="form-select"></select>
+                        <div class="help-text" style="color:#d35400; font-weight:bold;">
+                            * 본인 뿐만 아니라 등본상 가구원 전체 소득을 합산해야 합니다.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">③ 가구 재산 합계 (부채 제외 전)</label>
+                        <select id="asset_range" class="form-select">
+                            <option value="4">4억원 이하 (일반)</option>
+                            <option value="5">4억원 초과 ~ 5억원 이하</option>
+                            <option value="99">5억원 초과</option>
+                        </select>
+                        <div class="help-text">
+                            * 집, 토지, 전세보증금, 자동차 등을 모두 합친 금액입니다.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">④ 내담자 나이 (만 나이)</label>
+                        <input type="number" id="age" class="form-control" placeholder="숫자만 입력 (예: 62)" style="font-size:1.5rem; text-align:center;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">⑤ 특정계층 해당 여부 (선택사항)</label>
+                        <div style="margin-bottom:10px; font-size:0.95rem; color:#666;">
+                            * 해당되는 항목이 있으면 체크해주세요. (없으면 통과)
+                        </div>
+                        <div class="checkbox-container">
+                            <div class="checkbox-grid">
+                                <label class="checkbox-item"><input type="checkbox" name="spec_grp" value="y"> 기초연금 수급자</label>
+                                <label class="checkbox-item"><input type="checkbox" name="spec_grp" value="y"> 기초생활 수급자</label>
+                                <label class="checkbox-item"><input type="checkbox" name="spec_grp" value="y"> 국가유공자 가구</label>
+                                <label class="checkbox-item"><input type="checkbox" name="spec_grp" value="y"> 건설일용근로자</label>
+                                <label class="checkbox-item"><input type="checkbox" name="spec_grp" value="y"> 영세자영업자</label>
+                                <label class="checkbox-item"><input type="checkbox" name="spec_grp" value="y"> 특고/프리랜서</label>
+                            </div>
+                            <button type="button" class="btn btn-outline" style="margin-top:10px; font-size:1rem; padding:10px;" onclick="openModal('spec_modal')">📖 전체 목록 보기 (22종)</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">⑥ 실업급여 받고 계신가요?</label>
+                        <select id="unemp_status" class="form-select">
+                            <option value="none" selected>아니오 (해당없음)</option>
+                            <option value="receiving">현재 받는 중</option>
+                            <option value="recent_end">끝난 지 6개월 안 됨</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">⑦ 거주지 동 이름 (지사 안내용)</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" id="calc_addr_input" class="form-control" placeholder="예: 무거동, 농소1동">
+                        </div>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <button class="btn" onclick="calculateResult()">판정 결과 확인하기</button>
+                        <button class="btn btn-outline" onclick="resetCalculator()">초기화 (다시하기)</button>
+                    </div>
+                    
+                    <div id="result_area" class="result-box">
+                        <h2 id="res_title" style="margin-top:0; font-size:1.6rem;"></h2>
+                        <div id="res_desc" style="font-size:1.2rem; line-height:1.6; font-weight:bold;"></div>
+                        <div id="res_center" style="margin-top:20px; padding-top:15px; border-top:2px dashed #999;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="comparison" class="tab-content">
+                <div class="card">
+                    <div class="card-header">유형별 혜택 상세 비교</div>
+                    
+                    <div style="font-size:1.05rem; margin-bottom:15px; text-align:center; color:#555;">
+                        <span style="background:#fff3e0; padding:4px 8px; border-radius:4px;">💡 둘 다 <strong>취업지원 서비스</strong>는 똑같이 받습니다!</span>
+                    </div>
+
+                    <div class="benefit-card type-1">
+                        <div class="benefit-header">I 유형 (구직촉진수당)</div>
+                        <div class="benefit-body">
+                            <div class="benefit-item">
+                                <div class="benefit-icon">💰</div>
+                                <div class="benefit-text">
+                                    <strong>월 50만원 × 6개월</strong>
+                                    <span>총 300만원 현금 지원 (생활안정자금)</span>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">👨‍👩‍👧</div>
+                                <div class="benefit-text">
+                                    <strong>가족수당 추가</strong>
+                                    <span>부양가족 1인당 10만원 (최대 40만원)</span>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🎓</div>
+                                <div class="benefit-text">
+                                    <strong>직업훈련비 지원(내일배움카드)</strong>
+                                    <span>자부담 우대 <strong style="color:#2c3e50;">(무조건 적용)</strong></span>
+                                </div>
+                            </div>
+                             <div class="benefit-item">
+                                <div class="benefit-icon">🏆</div>
+                                <div class="benefit-text">
+                                    <strong>취업성공수당 최대 150만원</strong>
+                                    <span>취업 후 6개월 및 12개월 <span class="nowrap">계속근무(근속)시</span> 지급<br>
+                                    <span class="highlight-cond">조건: 소득 60% 이하 해당 시</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="benefit-card type-2">
+                        <div class="benefit-header">II 유형 (취업활동지원)</div>
+                        <div class="benefit-body">
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🎁</div>
+                                <div class="benefit-text">
+                                    <strong>참여수당</strong>
+                                    <span>최대 15~25만원 (취업활동 수립시(3회,상담 완료 시) 지급)</span>
+                                </div>
+                            </div>
+                             <div class="benefit-item">
+                                <div class="benefit-icon">👟</div>
+                                <div class="benefit-text">
+                                    <strong>참여장려수당 (방문 상담 시)</strong>
+                                    <span style="color:#d35400; font-weight:bold;">1회 2만원 (최대 10만원)</span>
+                                    <span>상담/진단/경로설정 등을 위해 센터 방문 시</span>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🎓</div>
+                                <div class="benefit-text">
+                                    <strong>직업훈련비 지원(내일배움카드)</strong>
+                                    <span>자부담 우대 <strong style="color:#d35400;">(특정계층만 해당)</strong></span>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">🏆</div>
+                                <div class="benefit-text">
+                                    <strong>취업성공수당 최대 150만원</strong>
+                                    <span>취업 후 6개월 및 12개월 <span class="nowrap">계속근무(근속)시</span> 지급<br>
+                                    <span class="highlight-cond">조건: 특정계층 또는 소득 60% 이하</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="common-service">
+                        <div class="common-title">🤝 공통 지원 서비스</div>
+                        <ul style="padding-left:20px; font-size:1.1rem; line-height:1.8; margin:0;">
+                            <li><strong>🏢 취업 알선 & 맞춤 정보 제공</strong></li>
+                            <li><strong>📄 입사지원서/이력서 작성 지원</strong></li>
+                            <li><strong>🕵️ 1:1 전담 상담사 배정</strong></li>
+                            <li><strong>🏫 내일배움카드 학원비(훈련비) 지원</strong></li>
+                            <li><strong>🗣️ 모의 면접 및 동행 면접 서비스</strong></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="branch_finder" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <span>📍 가까운 센터 찾기</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">사시는 곳 동 이름 입력</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" id="ulsan_addr" class="form-control" placeholder="예: 무거동, 구영리" onkeypress="handleEnter(event)">
+                            <button class="btn" style="width:100px; padding:0; margin:0;" onclick="findBranch()">찾기</button>
+                        </div>
+                    </div>
+
+                    <div id="branch_result" class="branch-result" style="display:none; background:#fff3e0; padding:20px; border-radius:10px; border:2px solid #ffa000;">
+                        <h3 id="branch_name" style="margin-top:0; color:#d35400; font-size:1.5rem;"></h3>
+                        <p id="branch_addr" style="font-size:1.1rem; margin:10px 0;"></p>
+                        <p id="branch_tel" style="font-weight:bold; font-size:1.3rem; color:#2c3e50;"></p>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
+                            <a id="branch_map" href="#" target="_blank" class="btn btn-outline" style="font-size:1rem; padding:10px; margin:0; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center;">🗺️ 지도 보기</a>
+                            <a href="tel:" id="branch_call_btn" class="btn" style="font-size:1rem; padding:10px; margin:0; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center;">📞 전화 걸기</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="faq_section" class="tab-content">
+                <div class="card">
+                    <div class="card-header">자주 묻는 질문</div>
+                    <div>
+                        <div class="accordion-header" onclick="toggleAccordion(this)">Q. 나이가 60세 넘어도 되나요? <span>▼</span></div>
+                        <div class="accordion-content">A. 네! 만 69세까지 신청 가능합니다.</div>
+                        
+                        <div class="accordion-header" onclick="toggleAccordion(this)">Q. 경비교육 받는 중인데 신청 되나요? <span>▼</span></div>
+                        <div class="accordion-content">A. 네, 가능합니다. 교육 수료 후 바로 취업지원을 받으실 수 있습니다.</div>
+
+                        <div class="accordion-header" onclick="toggleAccordion(this)">Q. 실업급여 다 받았는데 신청 되나요? <span>▼</span></div>
+                        <div class="accordion-content">A. 실업급여 종료 후 바로 II유형 신청이 가능합니다. (I유형은 종료 후 6개월 지나야 함)</div>
+
+                        <div class="accordion-header" onclick="toggleAccordion(this)">Q. 건강보험료로 계산하나요? <span>▼</span></div>
+                        <div class="accordion-content">A. 아닙니다. 실제 소득(종합소득 신고액 등)을 기준으로 합니다.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="spec_modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('spec_modal')">&times;</span>
+            <div class="modal-title" style="font-size:1.5rem; font-weight:bold; margin-bottom:15px;">📖 특정계층 전체 목록</div>
+            <div style="line-height:1.8; font-size:1.1rem;">
+                <ol style="padding-left:20px;">
+                    <li>기초연금수급자 (만 65세 이상)</li>
+                    <li>기초생활수급자</li>
+                    <li>국가유공자 가구원</li>
+                    <li>건설일용근로자 (최근 6개월 30일 이상)</li>
+                    <li>영세자영업자 (매출 3억 이하)</li>
+                    <li>특수형태근로종사자/프리랜서</li>
+                    <li>노숙인 등 비주택거주자</li>
+                    <li>북한이탈주민</li>
+                    <li>여성가구주 (가장)</li>
+                    <li>결혼이민자 / 중도입국자녀</li>
+                    <li>신용회복지원자 (6개월 이상 납입)</li>
+                    <li>위기청소년 / 구직단념청년</li>
+                    <li>FTA 피해 실직자</li>
+                    <li>미혼모·한부모</li>
+                    <li>산재 장해자</li>
+                    <li>고용위기지역 이직자</li>
+                    <li>기업활력법/특별고용지원업종 이직자</li>
+                    <li>폐업 소상공인</li>
+                </ol>
+            </div>
+            <button class="btn" style="margin-top:20px;" onclick="closeModal('spec_modal')">닫기</button>
+        </div>
+    </div>
+    
+    <div id="exclusion_modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('exclusion_modal')">&times;</span>
+            <div class="modal-title" style="font-size:1.5rem; font-weight:bold; margin-bottom:15px;">🚫 참여 제한 대상</div>
+            <ul style="line-height:1.8; font-size:1.1rem;">
+                <li>군 복무 중인 자</li>
+                <li>실업급여 수급 중인 자 (종료 후 가능)</li>
+                <li>생계급여 수급자 (II유형만 가능)</li>
+            </ul>
+            <button class="btn" style="margin-top:20px;" onclick="closeModal('exclusion_modal')">닫기</button>
+        </div>
+    </div>
+
+<script>
+    const medianIncome = { 1: 2564238, 2: 4199292, 3: 5359036, 4: 6494738, 5: 7556719, 6: 8555952 };
+    
+    // 메뉴 탭 전환 함수
+    function showTab(id, el, event) {
+        if(event) event.preventDefault();
+        
+        document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+        const target = document.getElementById(id);
+        if(target) target.style.display = 'block';
+        
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        if(el) el.classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function toggleAccordion(header) { 
+        header.classList.toggle('active');
+        const content = header.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    }
+
+    function updateIncomeOptions() {
+        const cnt = document.getElementById('family_cnt').value;
+        const base = medianIncome[cnt];
+        const sel = document.getElementById('income_range');
+        sel.innerHTML = '';
+        sel.add(new Option(`중위 60% 이하 (월 약 ${Math.floor(base*0.6/10000)}만원 이하)`, '0.6'));
+        sel.add(new Option(`중위 100% 이하 (월 약 ${Math.floor(base/10000)}만원 이하)`, '1.0'));
+        sel.add(new Option(`중위 100% 초과`, '1.1'));
+    }
+    
+    updateIncomeOptions();
+
+    function calculateResult() {
+        const age = parseInt(document.getElementById('age').value, 10);
+        const income = parseFloat(document.getElementById('income_range').value);
+        const asset = parseFloat(document.getElementById('asset_range').value);
+        const isSpec = document.querySelectorAll('input[name="spec_grp"]:checked').length > 0;
+        const unemp = document.getElementById('unemp_status').value;
+        const addrRaw = document.getElementById('calc_addr_input').value;
+
+        const resBox = document.getElementById('result_area');
+        
+        if (!age) { alert('나이를 입력해주세요'); return; }
+
+        resBox.style.display = 'block';
+        
+        let resultTitle = "";
+        let resultDesc = "";
+        let resClass = "";
+
+        if (age < 15 || age > 69) {
+            resultTitle = "🚫 연령 제한";
+            resultDesc = "국민취업지원제도는 만 15세 ~ 69세까지 신청 가능합니다.";
+            resClass = "res-fail";
+        } else if (unemp === 'receiving') {
+            resultTitle = "⚠️ 실업급여 수급 중";
+            resultDesc = "현재 실업급여를 받고 계시면 종료 후 신청 가능합니다.";
+            resClass = "res-fail";
+        } else {
+            if (income <= 0.6 && asset <= 4) {
+                resultTitle = "✅ I유형 신청 가능 (월 60만원)";
+                resultDesc = "소득과 재산 기준을 충족하십니다.<br>월 60만원(최대 6개월) 구직촉진수당 대상 가능성이 높습니다!";
+                resClass = "res-success";
+            } 
+            else if (age >= 35 && income <= 1.0) {
+                resultTitle = "✅ II유형 신청 가능 (취업지원)";
+                resultDesc = "중장년(35~69세) 유형으로 신청 가능합니다.<br>이력서 작성부터 알선까지 지원해드립니다.";
+                resClass = "res-warning";
+            }
+            else if (isSpec) {
+                resultTitle = "✅ II유형 신청 가능 (특정계층)";
+                resultDesc = "체크하신 특정계층에 해당하여<br>소득/재산과 관계없이 지원 가능합니다.";
+                resClass = "res-warning";
+            } else {
+                resultTitle = "🚫 기준 초과";
+                resultDesc = "입력하신 기준으로는 지원 대상 기준을 초과합니다.<br>정확한 내용은 상담을 받아보세요.";
+                resClass = "res-fail";
+            }
+        }
+
+        document.getElementById('res_title').innerText = resultTitle;
+        document.getElementById('res_desc').innerHTML = resultDesc;
+        resBox.className = 'result-box ' + resClass;
+        
+        if(addrRaw) {
+            const b = getNearestCenterByAddr(addrRaw);
+            if(b) {
+                document.getElementById('res_center').innerHTML = 
+                    `<strong>💡 선생님 댁에서 가장 가까운 센터는?</strong><br>
+                    <span style="color:#004e92; font-size:1.3rem; font-weight:bold;">${b.name}</span><br>
+                    문의: <a href="tel:${b.tel}" style="text-decoration:none; color:#333; font-weight:bold;">${b.tel} (클릭하여 전화)</a>`;
+            }
+        } else {
+             document.getElementById('res_center').innerHTML = "";
+        }
+        resBox.scrollIntoView({behavior: "smooth", block: "center"});
+    }
+
+    function resetCalculator() {
+        document.querySelectorAll('input, select').forEach(el => {
+            if(el.type === 'checkbox') el.checked = false;
+            else if(el.tagName === 'SELECT') el.selectedIndex = 0;
+            else el.value = '';
+        });
+        document.getElementById('result_area').style.display = 'none';
+        updateIncomeOptions();
+        window.scrollTo(0,0);
+    }
+    
+    function handleEnter(e) { if(e.key === 'Enter') findBranch(); }
+
+    function getNearestCenterByAddr(addrRaw) {
+        if (!addrRaw) return null;
+        const addr = addrRaw.replace(/\s+/g, "");
+
+        const CENTER = {
+            namgu:  { name: "남구센터 (수암로)", tel: "052-966-5001", q: "울산 남구 수암로 5" },
+            dongbu: { name: "동구센터 (방어진)", tel: "052-966-3500", q: "울산 동구 방어진순환도로 678" },
+            bukbu:  { name: "북부센터 (호계)",   tel: "052-913-3500", q: "울산 북구 송내4길 14" },
+            seobu:  { name: "서부센터 (굴화)",   tel: "052-915-3500", q: "울산 울주군 범서읍 굴화1길 60" }
+        };
+
+        if (addr.includes("북구") || addr.includes("농소") || addr.includes("호계") || addr.includes("매곡") || addr.includes("송정") || addr.includes("화봉") || addr.includes("효문")) return CENTER.bukbu;
+        if (addr.includes("동구") || addr.includes("방어") || addr.includes("화정") || addr.includes("전하") || addr.includes("남목")) return CENTER.dongbu;
+        if (addr.includes("무거") || addr.includes("범서") || addr.includes("구영") || addr.includes("천상") || addr.includes("언양") || addr.includes("굴화")) return CENTER.seobu;
+        return CENTER.namgu;
+    }
+
+    function findBranch() {
+        const raw = document.getElementById('ulsan_addr').value;
+        if(!raw) { alert('동 이름을 입력해주세요'); return; }
+        
+        const b = getNearestCenterByAddr(raw);
+        const resDiv = document.getElementById('branch_result');
+        resDiv.style.display = 'block';
+        
+        document.getElementById('branch_name').innerText = "(주)좋은일자리 " + b.name;
+        document.getElementById('branch_addr').innerText = b.q;
+        document.getElementById('branch_tel').innerText = b.tel;
+        document.getElementById('branch_map').href = "https://map.kakao.com/link/search/" + encodeURIComponent(b.q);
+        document.getElementById('branch_call_btn').href = "tel:" + b.tel;
+    }
+</script>
+</body>
+</html>
