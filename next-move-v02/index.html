@@ -201,13 +201,13 @@ function play(i){
  var r=rounds[level],m=r.moves[i],dice="",message="",success=true;
  trait[m.trait]++;history.push(m.n);
  if(m.risk){
-  var roll=1+Math.floor(Math.random()*6),pass=blessed?2:4;
+  var roll=1+Math.floor(Math.random()*6),pass=blessed?2:(stats.chance>=5?3:stats.chance<=0?5:4);
   success=roll>=pass;
   dice="🎲 "+roll+" / 6"+(blessed?" · 부적의 힘 ✦":"");
   applyDelta(success?m.ok:m.bad);
   message=success?m.win:m.lose;
  }else{applyDelta(m.v);message=m.result}
- blessed=false;
+ if(m.risk)blessed=false;
  var exhausted=stats.energy===0||stats.cash===0;
  popup("STAGE "+(level+1)+" · 카드 결과",success?"✨":"🌧️",success?"한 수 성공!":"아쉬운 한 수",message,dice,exhausted?"마지막 카드 받기 →":level===4?"인생 카드 받기 →":"다음 문으로 →",moveNext);
 }
